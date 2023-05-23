@@ -2,8 +2,11 @@
 import os
 from pathlib import Path
 import sys
-from PyQt5.QtCore import QAbstractListModel, Qt, QVariant, QObject, QUrl, pyqtProperty
-from PyQt5.QtSql import QSqlDatabase, QSqlQuery, QSqlTableModel, QSqlQueryModel
+
+from PyQt5.QtCore import QObject
+from PyQt5.QtCore import pyqtSlot, pyqtSignal
+
+from PyQt5.QtSql import QSqlDatabase, QSqlQuery, QSqlQueryModel
 from PyQt5.QtGui import QGuiApplication
 from PyQt5.QtQml import QQmlApplicationEngine
 
@@ -22,22 +25,44 @@ internal storage:
 
 '''
 
-class DatabaseModel(QAbstractListModel):
+class DatabaseHandler(QObject):
+    dataChanged = pyqtSignal()
+
     def __init__(self, parent=None):
         super().__init__(parent)
-        self._data = []
+        self.model = QSqlQueryModel()
+        self.model.setQuery("SELECT * FROM mytable")
 
-    def rowCount(self, parent=QModelIndex()):
-        return len(self._data)
+    @pyqtSlot(result=QSqlQueryModel)
+    def getDataModel(self):
+        return self.model
 
-    def data(self, index, role=Qt.DisplayRole):
-        if role == Qt.DisplayRole:
-            return QVariant(self._data[index.row()])
-        return QVariant()
+    @pyqtSlot(str, str)
+    def addRecord(self, name, age):
+        query = QSqlQuery()
+        query.prepare("INSERT INTO mytable (name, age) VALUES (?, ?)")
+        query.addBindValue(name)
+        query.addBindValue(age)
+        query.exec_()
+        self.dataChanged.emit()
 
 if __name__ == "__main__":
     app = QGuiApplication(sys.argv)
+
+    # Establish the database connection
+    try:
+        db = QSqlDatabase.addDatabase("QSQLITE")
+        db.setDatabaseName("path/to/database.db")
+        db.open()
+    except:
+        print("database error")
+
+    # Create an instance of the DatabaseHandler
+    databaseHandler = DatabaseHandler()
+
+    # Load QML file
     engine = QQmlApplicationEngine()
+    engine.rootContext().setContextProperty("databaseHandler", databaseHandler)
     engine.load(os.fspath(Path(__file__).resolve().parent / "main.qml"))
     if not engine.rootObjects():
         sys.exit(-1)

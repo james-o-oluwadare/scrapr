@@ -10,7 +10,7 @@ Item {
         id: internal
         // check availability of database and populate screen
 
-        property bool name: value
+        property bool ready: false
     }
 
     BusyIndicator {
