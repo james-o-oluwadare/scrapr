@@ -25,6 +25,11 @@ internal storage:
 
 '''
 
+# include class to read data from url and writes
+#    to db, from search_engine.py
+
+# class to read data from db and add to model
+#    for display via qml listview
 class DatabaseHandler(QObject):
     dataChanged = pyqtSignal()
 
