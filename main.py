@@ -30,24 +30,32 @@ internal storage:
 
 # class to read data from db and add to model
 #    for display via qml listview
+# include code to handle multiple tables within the db
+#    Papers table and Authors table
+# change "QSQLITE" to "QMySql
+
+
 class DatabaseHandler(QObject):
+    # __init__ to confirm or  establish connection
+    # to db
     dataChanged = pyqtSignal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.model = QSqlQueryModel()
-        self.model.setQuery("SELECT * FROM mytable")
+        self.model.setQuery("SELECT * FROM Papers")
 
     @pyqtSlot(result=QSqlQueryModel)
     def getDataModel(self):
         return self.model
 
     @pyqtSlot(str, str)
-    def addRecord(self, name, age):
+    def addRecord(self, title, link, PublicationYear):
         query = QSqlQuery()
-        query.prepare("INSERT INTO mytable (name, age) VALUES (?, ?)")
-        query.addBindValue(name)
-        query.addBindValue(age)
+        query.prepare("INSERT INTO Papers (Title, Link, PublicationYear) VALUES (?, ?)")
+        query.addBindValue(title)
+        query.addBindValue(link)
+        query.addBindValue(PublicationYear)
         query.exec_()
         self.dataChanged.emit()
 
@@ -57,7 +65,7 @@ if __name__ == "__main__":
     # Establish the database connection
     try:
         db = QSqlDatabase.addDatabase("QSQLITE")
-        db.setDatabaseName("path/to/database.db")
+        db.setDatabaseName("publication.db")
         db.open()
     except:
         print("database error")

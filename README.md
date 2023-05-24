@@ -1,2 +1,3 @@
-# scrapr
-search engine in jupyter notebook form
+# Scrapr
+
+Search engine for academic research materials

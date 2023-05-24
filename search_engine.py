@@ -23,7 +23,7 @@ from nltk.stem import PorterStemmer
 nltk.download('stopwords')
 nltk.download('wordnet')
 
-
+# 
 url = f"https://pureportal.coventry.ac.uk/en/organisations/research-centre-for-computational-science-and-mathematical-modell/publications/?ordering=publicationYearThenTitle&descending=true"
 #url = f"https://pureportal.coventry.ac.uk/en/organisations/research-centre-for-computational-science-and-mathematical-modell/publications/"
 page = requests.get(url, verify=False).text
