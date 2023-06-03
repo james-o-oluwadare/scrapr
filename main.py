@@ -34,7 +34,10 @@ internal storage:
 #    Papers table and Authors table
 # change "QSQLITE" to "QMySql
 
-
+class Window():
+    def __init__():
+        ...
+        
 class DatabaseHandler(QObject):
     # __init__ to confirm or  establish connection
     # to db

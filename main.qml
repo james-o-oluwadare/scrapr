@@ -12,6 +12,7 @@ Window {
     title: qsTr("Searchr")
     flags: "FramelessWindowHint"
 
+
     Rectangle {
         id: bgwindow
         //opacity: 0
